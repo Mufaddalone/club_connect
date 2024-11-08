@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events Page</title>
+  <!-- Bootstrap CSS -->
+  <style>
+    .card-cover {
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid py-5">
+  <div class="row">
+    <!-- Sidebar -->
+    <aside class="col-md-3 mb-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="card-title mb-4">Filters</h5>
+        
+        <!-- Search bar -->
+        <div class="mb-3">
+          <label for="search" class="form-label">Search Events</label>
+          <input type="text" id="search" class="form-control" placeholder="Search by name">
+        </div>
+
+        <!-- Date filter -->
+        <div class="mb-3">
+          <label for="date" class="form-label">Date</label>
+          <input type="date" id="date" class="form-control">
+        </div>
+
+        <!-- Category filter -->
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select class="form-select">
+            <option selected>All Categories</option>
+            <option>Music</option>
+            <option>Art</option>
+            <option>Technology</option>
+            <option>Sports</option>
+          </select>
+        </div>
+
+        <!-- Tags filter -->
+        <div class="mb-3">
+          <label class="form-label">Tags</label>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="tag1">
+            <label class="form-check-label" for="tag1">Free Entry</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="tag2">
+            <label class="form-check-label" for="tag2">Online</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="tag3">
+            <label class="form-check-label" for="tag3">In-Person</label>
+          </div>
+        </div>
+
+        <!-- Apply Filters button -->
+        <button class="btn btn-primary w-100">Apply Filters</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area with Event Cards -->
+    <main class="col-md-9">
+      <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4">
+
+        <!-- Event Card 1 -->
+        <div class="col">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
+            <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Music Festival</h3>
+              <p class="mb-2">Experience an unforgettable music festival with amazing artists and live performances.</p>
+              <div class="d-flex flex-wrap gap-1 mb-4">
+                <span class="badge bg-primary">Music</span>
+                <span class="badge bg-secondary">Free Entry</span>
+                <span class="badge bg-info">In-Person</span>
+              </div>
+              <ul class="d-flex list-unstyled mt-auto">
+                <li class="me-auto">
+                  <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
+                </li>
+                <li class="d-flex align-items-center me-3">
+                  <i class="fas fa-map-marker-alt me-1"></i>
+                  <small>California</small>
+                </li>
+                <li class="d-flex align-items-center">
+                  <i class="fas fa-calendar-alt me-1"></i>
+                  <small>3d</small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Card 2 -->
+        <div class="col">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
+            <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Art Festival</h3>
+              <p class="mb-2">Explore beautiful art exhibits and engage with artists from around the world.</p>
+              <div class="d-flex flex-wrap gap-1 mb-4">
+                <span class="badge bg-success">Art</span>
+                <span class="badge bg-warning">Ticketed</span>
+                <span class="badge bg-dark">In-Person</span>
+              </div>
+              <ul class="d-flex list-unstyled mt-auto">
+                <li class="me-auto">
+                  <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
+                </li>
+                <li class="d-flex align-items-center me-3">
+                  <i class="fas fa-map-marker-alt me-1"></i>
+                  <small>New York</small>
+                </li>
+                <li class="d-flex align-items-center">
+                  <i class="fas fa-calendar-alt me-1"></i>
+                  <small>5d</small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Card 3 -->
+        <div class="col">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
+            <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Tech Conference</h3>
+              <p class="mb-2">Join us for the latest innovations, networking, and tech discussions.</p>
+              <div class="d-flex flex-wrap gap-1 mb-4">
+                <span class="badge bg-primary">Technology</span>
+                <span class="badge bg-info">Online</span>
+                <span class="badge bg-danger">Free</span>
+              </div>
+              <ul class="d-flex list-unstyled mt-auto">
+                <li class="me-auto">
+                  <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
+                </li>
+                <li class="d-flex align-items-center me-3">
+                  <i class="fas fa-map-marker-alt me-1"></i>
+                  <small>Online</small>
+                </li>
+                <li class="d-flex align-items-center">
+                  <i class="fas fa-calendar-alt me-1"></i>
+                  <small>1w</small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
+              <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Music Festival</h3>
+                <p class="mb-2">Experience an unforgettable music festival with amazing artists and live performances.</p>
+                <div class="d-flex flex-wrap gap-1 mb-4">
+                  <span class="badge bg-primary">Music</span>
+                  <span class="badge bg-secondary">Free Entry</span>
+                  <span class="badge bg-info">In-Person</span>
+                </div>
+                <ul class="d-flex list-unstyled mt-auto">
+                  <li class="me-auto">
+                    <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
+                  </li>
+                  <li class="d-flex align-items-center me-3">
+                    <i class="fas fa-map-marker-alt me-1"></i>
+                    <small>California</small>
+                  </li>
+                  <li class="d-flex align-items-center">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    <small>3d</small>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Event Card 2 -->
+          <div class="col">
+            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
+              <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Art Festival</h3>
+                <p class="mb-2">Explore beautiful art exhibits and engage with artists from around the world.</p>
+                <div class="d-flex flex-wrap gap-1 mb-4">
+                  <span class="badge bg-success">Art</span>
+                  <span class="badge bg-warning">Ticketed</span>
+                  <span class="badge bg-dark">In-Person</span>
+                </div>
+                <ul class="d-flex list-unstyled mt-auto">
+                  <li class="me-auto">
+                    <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
+                  </li>
+                  <li class="d-flex align-items-center me-3">
+                    <i class="fas fa-map-marker-alt me-1"></i>
+                    <small>New York</small>
+                  </li>
+                  <li class="d-flex align-items-center">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    <small>5d</small>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Event Card 3 -->
+          <div class="col">
+            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
+              <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Tech Conference</h3>
+                <p class="mb-2">Join us for the latest innovations, networking, and tech discussions.</p>
+                <div class="d-flex flex-wrap gap-1 mb-4">
+                  <span class="badge bg-primary">Technology</span>
+                  <span class="badge bg-info">Online</span>
+                  <span class="badge bg-danger">Free</span>
+                </div>
+                <ul class="d-flex list-unstyled mt-auto">
+                  <li class="me-auto">
+                    <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
+                  </li>
+                  <li class="d-flex align-items-center me-3">
+                    <i class="fas fa-map-marker-alt me-1"></i>
+                    <small>Online</small>
+                  </li>
+                  <li class="d-flex align-items-center">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    <small>1w</small>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+
+</body>
+</html>
