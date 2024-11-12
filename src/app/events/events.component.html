@@ -4,244 +4,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events Page</title>
-  <!-- Bootstrap CSS -->
   <style>
     .card-cover {
       background-size: cover;
       background-position: center;
+      min-height: 300px;
+    }
+    .text-shadow-1 {
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
   </style>
 </head>
 <body>
-
-<div class="container-fluid py-5">
-  <div class="row">
-    <!-- Sidebar -->
-    <aside class="col-md-3 mb-4">
-      <div class="card shadow-sm p-3">
-        <h5 class="card-title mb-4">Filters</h5>
-        
-        <!-- Search bar -->
-        <div class="mb-3">
-          <label for="search" class="form-label">Search Events</label>
-          <input type="text" id="search" class="form-control" placeholder="Search by name">
-        </div>
-
-        <!-- Date filter -->
-        <div class="mb-3">
-          <label for="date" class="form-label">Date</label>
-          <input type="date" id="date" class="form-control">
-        </div>
-
-        <!-- Category filter -->
-        <div class="mb-3">
-          <label class="form-label">Category</label>
-          <select class="form-select">
-            <option selected>All Categories</option>
-            <option>Music</option>
-            <option>Art</option>
-            <option>Technology</option>
-            <option>Sports</option>
-          </select>
-        </div>
-
-        <!-- Tags filter -->
-        <div class="mb-3">
-          <label class="form-label">Tags</label>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="tag1">
-            <label class="form-check-label" for="tag1">Free Entry</label>
+  <div class="container-fluid py-5">
+    <div class="row">
+      <!-- Sidebar Filters -->
+      <aside class="col-md-3 mb-4">
+        <div class="card shadow-sm p-3">
+          <h5 class="card-title mb-4">Filters</h5>
+          
+          <!-- Search bar -->
+          <div class="mb-3">
+            <label for="search" class="form-label">Search Events</label>
+            <input 
+              type="text" 
+              id="search" 
+              class="form-control" 
+              placeholder="Search by name or description" 
+              [(ngModel)]="filters.searchText"
+              (ngModelChange)="onSearchChange()">
           </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="tag2">
-            <label class="form-check-label" for="tag2">Online</label>
+
+          <!-- Date filter -->
+          <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input 
+              type="date" 
+              id="date" 
+              class="form-control"
+              [(ngModel)]="filters.date"
+              (ngModelChange)="onDateChange()">
           </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="tag3">
-            <label class="form-check-label" for="tag3">In-Person</label>
+
+          <!-- Category filter -->
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select 
+              class="form-select"
+              [(ngModel)]="filters.category"
+              (ngModelChange)="onCategoryChange()">
+              <option value="">All Categories</option>
+              <option *ngFor="let category of availableCategories" [value]="category">
+                {{category}}
+              </option>
+            </select>
           </div>
-        </div>
 
-        <!-- Apply Filters button -->
-        <button class="btn btn-primary w-100">Apply Filters</button>
-      </div>
-    </aside>
-
-    <!-- Main Content Area with Event Cards -->
-    <main class="col-md-9">
-      <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4">
-
-        <!-- Event Card 1 -->
-        <div class="col">
-          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
-            <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Music Festival</h3>
-              <p class="mb-2">Experience an unforgettable music festival with amazing artists and live performances.</p>
-              <div class="d-flex flex-wrap gap-1 mb-4">
-                <span class="badge bg-primary">Music</span>
-                <span class="badge bg-secondary">Free Entry</span>
-                <span class="badge bg-info">In-Person</span>
-              </div>
-              <ul class="d-flex list-unstyled mt-auto">
-                <li class="me-auto">
-                  <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
-                </li>
-                <li class="d-flex align-items-center me-3">
-                  <i class="fas fa-map-marker-alt me-1"></i>
-                  <small>California</small>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="fas fa-calendar-alt me-1"></i>
-                  <small>3d</small>
-                </li>
-              </ul>
+          <!-- Tags filter -->
+          <div class="mb-3">
+            <label class="form-label">Tags</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button 
+                *ngFor="let tag of availableTags"
+                class="btn btn-sm"
+                [ngClass]="{
+                  'btn-primary': isTagSelected(tag),
+                  'btn-outline-primary': !isTagSelected(tag)
+                }"
+                (click)="toggleTag(tag)">
+                {{tag}}
+              </button>
             </div>
           </div>
-        </div>
 
-        <!-- Event Card 2 -->
-        <div class="col">
-          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
-            <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Art Festival</h3>
-              <p class="mb-2">Explore beautiful art exhibits and engage with artists from around the world.</p>
-              <div class="d-flex flex-wrap gap-1 mb-4">
-                <span class="badge bg-success">Art</span>
-                <span class="badge bg-warning">Ticketed</span>
-                <span class="badge bg-dark">In-Person</span>
-              </div>
-              <ul class="d-flex list-unstyled mt-auto">
-                <li class="me-auto">
-                  <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
-                </li>
-                <li class="d-flex align-items-center me-3">
-                  <i class="fas fa-map-marker-alt me-1"></i>
-                  <small>New York</small>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="fas fa-calendar-alt me-1"></i>
-                  <small>5d</small>
-                </li>
-              </ul>
-            </div>
+          <!-- Reset Filters button -->
+          <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">
+            Reset Filters
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="col-md-9">
+        <!-- Filter Summary -->
+        <div class="mb-4" *ngIf="hasActiveFilters()">
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="text-muted">Active filters:</span>
+            <ng-container *ngIf="filters.category">
+              <span class="badge bg-primary">{{filters.category}}</span>
+            </ng-container>
+            <ng-container *ngFor="let tag of getSelectedTagsArray()">
+              <span class="badge bg-info">{{tag}}</span>
+            </ng-container>
+            <ng-container *ngIf="filters.date">
+              <span class="badge bg-secondary">{{filters.date | date}}</span>
+            </ng-container>
+            <ng-container *ngIf="filters.searchText">
+              <span class="badge bg-secondary">"{{filters.searchText}}"</span>
+            </ng-container>
           </div>
         </div>
 
-        <!-- Event Card 3 -->
-        <div class="col">
-          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
-            <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Tech Conference</h3>
-              <p class="mb-2">Join us for the latest innovations, networking, and tech discussions.</p>
-              <div class="d-flex flex-wrap gap-1 mb-4">
-                <span class="badge bg-primary">Technology</span>
-                <span class="badge bg-info">Online</span>
-                <span class="badge bg-danger">Free</span>
-              </div>
-              <ul class="d-flex list-unstyled mt-auto">
-                <li class="me-auto">
-                  <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
-                </li>
-                <li class="d-flex align-items-center me-3">
-                  <i class="fas fa-map-marker-alt me-1"></i>
-                  <small>Online</small>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="fas fa-calendar-alt me-1"></i>
-                  <small>1w</small>
-                </li>
-              </ul>
-            </div>
-          </div>
+        <!-- No Results Message -->
+        <div *ngIf="filteredEvents.length === 0" class="text-center py-5">
+          <p class="h5 text-muted">No events available for the selected filters.</p>
         </div>
-        <div class="col">
-            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
+
+        <!-- Event Cards -->
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredEvents.length > 0">
+          <div class="col" *ngFor="let event of filteredEvents">
+            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" 
+                 [style.background-image]="'url(' + event.imageUrl + ')'">
               <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Music Festival</h3>
-                <p class="mb-2">Experience an unforgettable music festival with amazing artists and live performances.</p>
+                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{event.name}}</h3>
+                <p class="mb-2">{{event.description}}</p>
                 <div class="d-flex flex-wrap gap-1 mb-4">
-                  <span class="badge bg-primary">Music</span>
-                  <span class="badge bg-secondary">Free Entry</span>
-                  <span class="badge bg-info">In-Person</span>
+                  <span class="badge bg-primary">{{event.category}}</span>
+                  <span class="badge" 
+                        *ngFor="let tag of event.tags"
+                        [ngClass]="{
+                          'bg-info': isTagSelected(tag),
+                          'bg-secondary': !isTagSelected(tag)
+                        }">
+                    {{tag}}
+                  </span>
                 </div>
                 <ul class="d-flex list-unstyled mt-auto">
                   <li class="me-auto">
-                    <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
+                    <img [src]="event.organizer.avatar" [alt]="event.organizer.name" 
+                         width="32" height="32" class="rounded-circle border border-white">
                   </li>
                   <li class="d-flex align-items-center me-3">
                     <i class="fas fa-map-marker-alt me-1"></i>
-                    <small>California</small>
+                    <small>{{event.location}}</small>
                   </li>
                   <li class="d-flex align-items-center">
                     <i class="fas fa-calendar-alt me-1"></i>
-                    <small>3d</small>
+                    <small>{{event.date | date}}</small>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-  
-          <!-- Event Card 2 -->
-          <div class="col">
-            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
-              <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Art Festival</h3>
-                <p class="mb-2">Explore beautiful art exhibits and engage with artists from around the world.</p>
-                <div class="d-flex flex-wrap gap-1 mb-4">
-                  <span class="badge bg-success">Art</span>
-                  <span class="badge bg-warning">Ticketed</span>
-                  <span class="badge bg-dark">In-Person</span>
-                </div>
-                <ul class="d-flex list-unstyled mt-auto">
-                  <li class="me-auto">
-                    <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
-                  </li>
-                  <li class="d-flex align-items-center me-3">
-                    <i class="fas fa-map-marker-alt me-1"></i>
-                    <small>New York</small>
-                  </li>
-                  <li class="d-flex align-items-center">
-                    <i class="fas fa-calendar-alt me-1"></i>
-                    <small>5d</small>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Event Card 3 -->
-          <div class="col">
-            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('https://via.placeholder.com/600x400');">
-              <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Tech Conference</h3>
-                <p class="mb-2">Join us for the latest innovations, networking, and tech discussions.</p>
-                <div class="d-flex flex-wrap gap-1 mb-4">
-                  <span class="badge bg-primary">Technology</span>
-                  <span class="badge bg-info">Online</span>
-                  <span class="badge bg-danger">Free</span>
-                </div>
-                <ul class="d-flex list-unstyled mt-auto">
-                  <li class="me-auto">
-                    <img src="https://via.placeholder.com/32" alt="Organizer" width="32" height="32" class="rounded-circle border border-white">
-                  </li>
-                  <li class="d-flex align-items-center me-3">
-                    <i class="fas fa-map-marker-alt me-1"></i>
-                    <small>Online</small>
-                  </li>
-                  <li class="d-flex align-items-center">
-                    <i class="fas fa-calendar-alt me-1"></i>
-                    <small>1w</small>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   </div>
-</div>
-
-
 </body>
 </html>

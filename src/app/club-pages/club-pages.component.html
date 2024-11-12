@@ -1,61 +1,107 @@
 <div class="container-fluid py-5">
-    <div class="row">
-      <!-- Sidebar -->
-      <aside class="col-md-3 mb-4">
-        <div class="card shadow-sm p-3">
-          <h5 class="card-title mb-4">Filters</h5>
-          
-          <!-- Search bar -->
-          <div class="mb-3">
-            <label for="search" class="form-label">Search Clubs</label>
-            <input 
-              type="text" 
-              id="search" 
-              class="form-control" 
-              placeholder="Search by name, description, or tags" 
-              [(ngModel)]="filters.searchText"
-              (ngModelChange)="onSearchChange()">
-          </div>
-  
-          <!-- Category filter -->
-          <div class="mb-3">
-            <label class="form-label">Category</label>
-            <select 
-              class="form-select" 
-              [(ngModel)]="filters.category"
-              (ngModelChange)="onCategoryChange()">
-              <option value="">All Categories</option>
-              <option value="Art">Art</option>
-              <option value="Technology">Technology</option>
-              <option value="Music">Music</option>
-              <option value="Commerce">Commerce</option>
-            </select>
-          </div>
-  
-          <!-- Reset Filters button -->
-          <button class="btn btn-secondary w-100" (click)="resetFilters()">Reset Filters</button>
+  <div class="row">
+    <!-- Sidebar -->
+    <aside class="col-md-3 mb-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="card-title mb-4">Filters</h5>
+        
+        <!-- Search bar -->
+        <div class="mb-3">
+          <label for="search" class="form-label">Search Clubs</label>
+          <input 
+            type="text" 
+            id="search" 
+            class="form-control" 
+            placeholder="Search by name, description, or tags" 
+            [(ngModel)]="filters.searchText"
+            (ngModelChange)="onSearchChange()">
         </div>
-      </aside>
-  
-      <!-- Main Content Area with Club Cards -->
-      <main class="col-md-9">
-        <div *ngIf="filteredClubs.length === 0" class="text-center py-5">
-          <p class="h5 text-muted">No clubs available for the selected filters.</p>
+
+        <!-- Category filter -->
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select 
+            class="form-select" 
+            [(ngModel)]="filters.category"
+            (ngModelChange)="onCategoryChange()">
+            <option value="">All Categories</option>
+            <option *ngFor="let category of availableCategories" [value]="category">
+              {{category}}
+            </option>
+          </select>
         </div>
-        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredClubs.length > 0">
-          <div class="col" *ngFor="let club of filteredClubs">
-            <div class="card h-100 overflow-hidden rounded-4 shadow-lg">
-              <img [src]="club.imageUrl" class="card-img-top" alt="{{ club.name }}">
-              <div class="card-body d-flex flex-column p-4">
-                <h5 class="card-title fw-bold">{{ club.name }}</h5>
-                <p class="card-text">{{ club.description }}</p>
-                <div class="d-flex flex-wrap gap-1 mt-3">
-                  <span class="badge bg-primary" *ngFor="let tag of club.tags">{{ tag }}</span>
-                </div>
+
+        <!-- Tags filter -->
+        <div class="mb-3">
+          <label class="form-label">Tags</label>
+          <div class="d-flex flex-wrap gap-2">
+            <button 
+              *ngFor="let tag of availableTags"
+              class="btn btn-sm"
+              [ngClass]="{
+                'btn-primary': isTagSelected(tag),
+                'btn-outline-primary': !isTagSelected(tag)
+              }"
+              (click)="toggleTag(tag)">
+              {{tag}}
+            </button>
+          </div>
+        </div>
+
+        <!-- Reset Filters button -->
+        <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">Reset Filters</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="col-md-9">
+      <!-- Filter Summary -->
+      <div class="mb-4" *ngIf="hasActiveFilters()">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <span class="text-muted">Active filters:</span>
+          <ng-container *ngIf="filters.category">
+            <span class="badge bg-primary">{{filters.category}}</span>
+          </ng-container>
+          <ng-container *ngFor="let tag of getSelectedTagsArray()">
+            <span class="badge bg-info">{{tag}}</span>
+          </ng-container>
+          <ng-container *ngIf="filters.searchText">
+            <span class="badge bg-secondary">"{{filters.searchText}}"</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- No Results Message -->
+      <div *ngIf="filteredClubs.length === 0" class="text-center py-5">
+        <p class="h5 text-muted">No clubs available for the selected filters.</p>
+      </div>
+
+      <!-- Club Cards -->
+      <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredClubs.length > 0">
+        <div class="col" *ngFor="let club of filteredClubs">
+          <div class="card h-100 overflow-hidden rounded-4 shadow-lg">
+            <img [src]="club.imageUrl" class="card-img-top" alt="{{ club.name }}">
+            <div class="card-body d-flex flex-column p-3">
+              <div class="mb-2">
+                <span class="badge bg-secondary">{{club.category}}</span>
+              </div>
+              <h5 class="card-title fw-bold">{{ club.name }}</h5>
+              <p class="card-text">{{ club.description }}</p>
+              <div class="d-flex flex-wrap gap-1 mt-3">
+                <span 
+                  *ngFor="let tag of club.tags"
+                  class="badge"
+                  [ngClass]="{
+                    'bg-primary': isTagSelected(tag),
+                    'bg-light text-dark': !isTagSelected(tag)
+                  }">
+                  {{ tag }}
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   </div>
+</div>
