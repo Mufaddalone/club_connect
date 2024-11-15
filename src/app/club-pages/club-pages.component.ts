@@ -19,6 +19,19 @@ export class ClubPagesComponent implements OnInit {
 
   clubs: Club[] = [];
   filteredClubs: Club[] = [];
+  subscribedClubs = new Set<number>();
+
+  onSubscribe(club: Club) {
+    if (!this.subscribedClubs.has(club.id)) {
+      this.subscribedClubs.add(club.id);
+      // TODO: Add API call to subscribe
+      console.log(`Subscribed to ${club.name}`);
+    }
+  }
+
+  isSubscribed(club: Club): boolean {
+    return this.subscribedClubs.has(club.id);
+  }
 
   filters = {
     searchText: '',

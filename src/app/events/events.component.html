@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -15,16 +15,158 @@
     }
   </style>
 </head>
-<body>
-  <div class="container-fluid py-5">
-    <div class="row">
+<body> -->
+  <!-- <div class="container-fluid py-5">
+    <div class="row"> -->
+      <!-- Removed <!DOCTYPE html>, <html>, <head>, and <body> tags for Angular component -->
+<div class="container-fluid py-5">
+  <div class="row">
+    <!-- Sidebar Filters -->
+    <aside class="col-md-3 mb-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="card-title mb-4">Filters</h5>
+        
+        <!-- Search bar -->
+        <div class="mb-3">
+          <label for="search" class="form-label">Search Events</label>
+          <input 
+            type="text" 
+            id="search" 
+            class="form-control" 
+            placeholder="Search by name or description" 
+            [(ngModel)]="filters.searchText"
+            (ngModelChange)="onSearchChange()">
+        </div>
+
+        <!-- Date filter -->
+        <div class="mb-3">
+          <label for="date" class="form-label">Date</label>
+          <input 
+            type="date" 
+            id="date" 
+            class="form-control"
+            [(ngModel)]="filters.date"
+            (ngModelChange)="onDateChange()">
+        </div>
+
+        <!-- Category filter -->
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select 
+            class="form-select"
+            [(ngModel)]="filters.category"
+            (ngModelChange)="onCategoryChange()">
+            <option value="">All Categories</option>
+            <option *ngFor="let category of availableCategories" [value]="category">
+              {{category}}
+            </option>
+          </select>
+        </div>
+
+        <!-- Tags filter -->
+        <div class="mb-3">
+          <label class="form-label">Tags</label>
+          <div class="d-flex flex-wrap gap-2">
+            <button 
+              *ngFor="let tag of availableTags"
+              class="btn btn-sm"
+              [ngClass]="{
+                'btn-primary': isTagSelected(tag),
+                'btn-outline-primary': !isTagSelected(tag)
+              }"
+              (click)="toggleTag(tag)">
+              {{tag}}
+            </button>
+          </div>
+        </div>
+
+        <!-- Reset Filters button -->
+        <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">
+          Reset Filters
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="col-md-9">
+      <!-- Filter Summary -->
+      <div class="mb-4" *ngIf="hasActiveFilters()">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <span class="text-muted">Active filters:</span>
+          <ng-container *ngIf="filters.category">
+            <span class="badge bg-primary">{{filters.category}}</span>
+          </ng-container>
+          <ng-container *ngFor="let tag of getSelectedTagsArray()">
+            <span class="badge bg-info">{{tag}}</span>
+          </ng-container>
+          <ng-container *ngIf="filters.date">
+            <span class="badge bg-secondary">{{filters.date | date}}</span>
+          </ng-container>
+          <ng-container *ngIf="filters.searchText">
+            <span class="badge bg-secondary">"{{filters.searchText}}"</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- No Results Message -->
+      <div *ngIf="filteredEvents.length === 0" class="text-center py-5">
+        <p class="h5 text-muted">No events available for the selected filters.</p>
+      </div>
+
+      <!-- Event Cards -->
+      <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredEvents.length > 0">
+        <div class="col" *ngFor="let event of filteredEvents">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" 
+     style="background-color: #343a40"> <!-- Replace dynamic background-image -->
+  <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+    <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{event.title}}</h3>
+          <!-- <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" 
+               [style.background-image]="'url(' + event.imageUrl + ')'">
+            <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{event.title}}</h3> -->
+              <p class="mb-2">{{event.description}}</p>
+              <div class="d-flex flex-wrap gap-1 mb-4">
+                <span class="badge bg-primary">{{event.category}}</span>
+                <span class="badge" 
+                      *ngFor="let tag of event.tags"
+                      [ngClass]="{
+                        'bg-info': isTagSelected(tag),
+                        'bg-secondary': !isTagSelected(tag)
+                      }">
+                  {{tag}}
+                </span>
+              </div>
+              <ul class="d-flex list-unstyled mt-auto">
+                <!-- Organizer section is commented out as it's not available in the API -->
+                <!--
+                <li class="me-auto">
+                  <img [src]="event.organizer.avatar" [alt]="event.organizer.name" 
+                       width="32" height="32" class="rounded-circle border border-white">
+                </li>
+                -->
+                <li class="d-flex align-items-center me-3">
+                  <i class="fas fa-map-marker-alt me-1"></i>
+                  <small>{{event.location}}</small>
+                </li>
+                <li class="d-flex align-items-center">
+                  <i class="fas fa-calendar-alt me-1"></i>
+                  <small>{{event.date | date:'mediumDate'}}</small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
       <!-- Sidebar Filters -->
-      <aside class="col-md-3 mb-4">
+      <!-- <aside class="col-md-3 mb-4">
         <div class="card shadow-sm p-3">
-          <h5 class="card-title mb-4">Filters</h5>
+          <h5 class="card-title mb-4">Filters</h5> -->
           
           <!-- Search bar -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="search" class="form-label">Search Events</label>
             <input 
               type="text" 
@@ -33,10 +175,10 @@
               placeholder="Search by name or description" 
               [(ngModel)]="filters.searchText"
               (ngModelChange)="onSearchChange()">
-          </div>
+          </div> -->
 
           <!-- Date filter -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="date" class="form-label">Date</label>
             <input 
               type="date" 
@@ -44,10 +186,10 @@
               class="form-control"
               [(ngModel)]="filters.date"
               (ngModelChange)="onDateChange()">
-          </div>
+          </div> -->
 
           <!-- Category filter -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label class="form-label">Category</label>
             <select 
               class="form-select"
@@ -58,10 +200,10 @@
                 {{category}}
               </option>
             </select>
-          </div>
+          </div> -->
 
           <!-- Tags filter -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label class="form-label">Tags</label>
             <div class="d-flex flex-wrap gap-2">
               <button 
@@ -75,19 +217,19 @@
                 {{tag}}
               </button>
             </div>
-          </div>
+          </div> -->
 
           <!-- Reset Filters button -->
-          <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">
+          <!-- <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">
             Reset Filters
           </button>
         </div>
-      </aside>
+      </aside> -->
 
       <!-- Main Content Area -->
-      <main class="col-md-9">
+      <!-- <main class="col-md-9"> -->
         <!-- Filter Summary -->
-        <div class="mb-4" *ngIf="hasActiveFilters()">
+        <!-- <div class="mb-4" *ngIf="hasActiveFilters()">
           <div class="d-flex flex-wrap gap-2 align-items-center">
             <span class="text-muted">Active filters:</span>
             <ng-container *ngIf="filters.category">
@@ -103,15 +245,15 @@
               <span class="badge bg-secondary">"{{filters.searchText}}"</span>
             </ng-container>
           </div>
-        </div>
+        </div> -->
 
         <!-- No Results Message -->
-        <div *ngIf="filteredEvents.length === 0" class="text-center py-5">
+        <!-- <div *ngIf="filteredEvents.length === 0" class="text-center py-5">
           <p class="h5 text-muted">No events available for the selected filters.</p>
-        </div>
+        </div> -->
 
         <!-- Event Cards -->
-        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredEvents.length > 0">
+        <!-- <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredEvents.length > 0">
           <div class="col" *ngFor="let event of filteredEvents">
             <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" 
                  [style.background-image]="'url(' + event.imageUrl + ')'">
@@ -149,6 +291,6 @@
         </div>
       </main>
     </div>
-  </div>
-</body>
-</html>
+  </div> -->
+<!-- </body> -->
+<!-- </html> -->
