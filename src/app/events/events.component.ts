@@ -24,6 +24,26 @@ export class EventsComponent implements OnInit {
     date: ''
   };
 
+  selectedEvent: EventDTO | null = null;
+subscribedEvents = new Set<number>();
+
+// Add new methods
+openEventModal(event: EventDTO) {
+  this.selectedEvent = event;
+}
+
+onSubscribe(eventId: number) {
+  if (!this.subscribedEvents.has(eventId)) {
+    this.subscribedEvents.add(eventId);
+    // TODO: Add API call to subscribe
+    console.log(`Subscribed to event ${eventId}`);
+  }
+}
+
+isSubscribed(eventId: number): boolean {
+  return this.subscribedEvents.has(eventId);
+}
+
   // Remove or comment out imageUrl and organizer related code
   /* 
   interface Organizer {

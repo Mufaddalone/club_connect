@@ -153,12 +153,83 @@
                   <small>{{event.date | date:'mediumDate'}}</small>
                 </li>
               </ul>
+              <div class="mt-auto pt-3 border-top">
+                <button 
+                  class="btn btn-outline-light w-100" 
+                  (click)="openEventModal(event)">
+                  <span>Learn More</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
   </div>
+</div>
+
+<div class="modal fade" 
+     [class.show]="selectedEvent" 
+     [style.display]="selectedEvent ? 'block' : 'none'"
+     tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" *ngIf="selectedEvent">
+      <div class="modal-header">
+        <h5 class="modal-title">{{selectedEvent.title}}</h5>
+        <button type="button" 
+                class="btn-close" 
+                (click)="selectedEvent = null">
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="lead">{{selectedEvent.description}}</p>
+        
+        <div class="d-flex gap-3 mb-3">
+          <div>
+            <i class="fas fa-calendar me-2"></i>
+            {{selectedEvent.date | date:'fullDate'}}
+          </div>
+          <div>
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{selectedEvent.location}}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <h6>Category</h6>
+          <span class="badge bg-primary">{{selectedEvent.category}}</span>
+        </div>
+
+        <div class="mb-3">
+          <h6>Tags</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-secondary" 
+                  *ngFor="let tag of selectedEvent.tags">
+              {{tag}}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" 
+                class="btn btn-secondary" 
+                (click)="selectedEvent = null">
+          Close
+        </button>
+        <button class="btn btn-primary"
+                [disabled]="isSubscribed(selectedEvent.id)"
+                (click)="onSubscribe(selectedEvent.id)">
+          {{isSubscribed(selectedEvent.id) ? 'Subscribed' : 'Subscribe'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade show" 
+     *ngIf="selectedEvent"
+     (click)="selectedEvent = null">
 </div>
       <!-- Sidebar Filters -->
       <!-- <aside class="col-md-3 mb-4">

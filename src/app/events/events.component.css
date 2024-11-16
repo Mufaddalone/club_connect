@@ -1,0 +1,24 @@
+.modal {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal.show {
+    display: block;
+  }
+  
+  .modal-backdrop {
+    opacity: 0.5;
+  }
+  
+  .btn-link:hover {
+    transform: translateX(5px);
+    transition: transform 0.2s;
+  }
+  
+  .card {
+    transition: transform 0.2s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
