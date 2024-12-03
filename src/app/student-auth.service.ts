@@ -23,7 +23,7 @@ export interface LoginResponse {
   providedIn: 'root',
 })
 export class StudentAuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = 'http://localhost:8082/api/auth';
 
   constructor(private http: HttpClient) {}
 

@@ -38,6 +38,7 @@ export class LoginComponent {
       next: (response) => {
         // Store the token
         localStorage.setItem('authToken', response.token);
+        localStorage.setItem('username', this.loginRequest.username);
 
         // Redirect based on the selected role
         if (this.role === 'ROLE_USER') {

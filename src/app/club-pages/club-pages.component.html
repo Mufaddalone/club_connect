@@ -17,41 +17,6 @@
             (ngModelChange)="onSearchChange()">
         </div>
 
-        <!-- Category filter (commented out) -->
-        <!--
-        <div class="mb-3">
-          <label class="form-label">Category</label>
-          <select 
-            class="form-select" 
-            [(ngModel)]="filters.category"
-            (ngModelChange)="onCategoryChange()">
-            <option value="">All Categories</option>
-            <option *ngFor="let category of availableCategories" [value]="category">
-              {{category}}
-            </option>
-          </select>
-        </div>
-        -->
-
-        <!-- Tags filter (commented out) -->
-        <!--
-        <div class="mb-3">
-          <label class="form-label">Tags</label>
-          <div class="d-flex flex-wrap gap-2">
-            <button 
-              *ngFor="let tag of availableTags"
-              class="btn btn-sm"
-              [ngClass]="{
-                'btn-primary': isTagSelected(tag),
-                'btn-outline-primary': !isTagSelected(tag)
-              }"
-              (click)="toggleTag(tag)">
-              {{tag}}
-            </button>
-          </div>
-        </div>
-        -->
-
         <!-- Reset Filters button -->
         <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">Reset Filters</button>
       </div>
@@ -63,14 +28,6 @@
       <div class="mb-4" *ngIf="hasActiveFilters()">
         <div class="d-flex flex-wrap gap-2 align-items-center">
           <span class="text-muted">Active filters:</span>
-          <!--
-          <ng-container *ngIf="filters.category">
-            <span class="badge bg-primary">{{filters.category}}</span>
-          </ng-container>
-          <ng-container *ngFor="let tag of getSelectedTagsArray()">
-            <span class="badge bg-info">{{tag}}</span>
-          </ng-container>
-          -->
           <ng-container *ngIf="filters.searchText">
             <span class="badge bg-secondary">"{{filters.searchText}}"</span>
           </ng-container>
@@ -86,10 +43,12 @@
       <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredClubs.length > 0">
         <div class="col" *ngFor="let club of filteredClubs">
           <div class="card h-100 overflow-hidden rounded-4 shadow-lg">
+            <img *ngIf="club.imageUrl" [src]="club.imageUrl" class="card-img-top" alt="{{ club.name }}" style="height: 400px; object-fit: cover;">
+      
             <div class="card-body d-flex flex-column p-3">
               <!-- Make club name clickable -->
               <h5 class="card-title fw-bold">
-                <a href="/clubs/{{club.id}}" class="text-decoration-none text-dark hover-primary">
+                <a href="/clubs/{{club.clubId}}" class="text-decoration-none text-dark hover-primary">
                   {{ club.name }}
                 </a>
               </h5>
@@ -98,47 +57,135 @@
               <!-- Add spacer to push button to bottom -->
               <div class="flex-grow-1"></div>
               
-              <!-- Subscribe button -->
-              <button 
-                class="btn btn-outline-primary mt-3 w-100"
-                (click)="onSubscribe(club)"
-                [disabled]="isSubscribed(club)">
-                {{ isSubscribed(club) ? 'Subscribed' : 'Subscribe' }}
-              </button>
             </div>
           </div>
-          <!-- <div class="card h-100 overflow-hidden rounded-4 shadow-lg"> -->
-            <!-- Image (commented out since 'imageUrl' is not available) -->
-            <!--
-            <img [src]="club.imageUrl" class="card-img-top" alt="{{ club.name }}">
-            -->
-            <!-- <div class="card-body d-flex flex-column p-3"> -->
-              <!-- Category badge (commented out) -->
-              <!--
-              <div class="mb-2">
-                <span class="badge bg-secondary">{{club.category}}</span>
-              </div>
-              -->
-              <!-- <h5 class="card-title fw-bold">{{ club.name }}</h5>
-              <p class="card-text">{{ club.description }}</p> -->
-              <!-- Tags badges (commented out) -->
-              <!--
-              <div class="d-flex flex-wrap gap-1 mt-3">
-                <span 
-                  *ngFor="let tag of club.tags"
-                  class="badge"
-                  [ngClass]="{
-                    'bg-primary': isTagSelected(tag),
-                    'bg-light text-dark': !isTagSelected(tag)
-                  }">
-                  {{ tag }}
-                </span>
-              </div>
-              -->
-            <!-- </div>
-          </div> -->
         </div>
       </div>
     </main>
+  </div>
+  <div class="text-center mt-5">
+    <button class="btn btn-primary btn-lg me-3" (click)="openCreateClubModal()">Create Club</button>
+    <button class="btn btn-primary btn-lg" (click)="openCreateEventModal()">Create Event</button>
+  </div>
+</div>
+<div class="modal" tabindex="-1" [class.show]="showCreateClubModal" [style.display]="showCreateClubModal ? 'block' : 'none'" aria-labelledby="createClubModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createClubModalLabel">Create New Club</h5>
+        <button type="button" class="btn-close" (click)="closeCreateClubModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onSubmitCreateClub()" #createClubForm="ngForm">
+          <!-- Name -->
+          <div class="mb-3">
+            <label for="clubName" class="form-label">Club Name</label>
+            <input
+              type="text"
+              id="clubName"
+              class="form-control"
+              [(ngModel)]="newClub.name"
+              name="name"
+              required
+            />
+          </div>
+          <!-- Description -->
+          <div class="mb-3">
+            <label for="clubDescription" class="form-label">Description</label>
+            <textarea
+              id="clubDescription"
+              class="form-control"
+              [(ngModel)]="newClub.description"
+              name="description"
+              required
+            ></textarea>
+          </div>
+          <!-- Image URL -->
+          <div class="mb-3">
+            <label for="clubImageUrl" class="form-label">Image URL</label>
+            <input
+              type="url"
+              id="clubImageUrl"
+              class="form-control"
+              [(ngModel)]="newClub.imageUrl"
+              name="imageUrl"
+            />
+          </div>
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button type="submit" class="btn btn-success btn-lg" [disabled]="createClubForm.invalid">Create Club</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" [class.show]="showEventModal" [style.display]="showEventModal ? 'block' : 'none'" aria-labelledby="createEventModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createEventModalLabel">Create New Event</h5>
+        <button type="button" class="btn-close" (click)="closeCreateEventModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onSubmitCreateEvent()" #createEventForm="ngForm">
+          <!-- Name -->
+          <div class="mb-3">
+            <label for="eventName" class="form-label">Event Name</label>
+            <input
+              type="text"
+              id="eventName"
+              class="form-control"
+              [(ngModel)]="newEvent.name"
+              name="name"
+              required
+            />
+          </div>
+          <!-- Description -->
+          <div class="mb-3">
+            <label for="eventDescription" class="form-label">Description</label>
+            <textarea
+              id="eventDescription"
+              class="form-control"
+              [(ngModel)]="newEvent.description"
+              name="description"
+              required
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="eventTag" class="form-label">Tags</label>
+            <textarea
+              id="eventTag"
+              class="form-control"
+              [(ngModel)]="newEvent.tags"
+              name="eventTag"
+              required
+            ></textarea>
+          </div>
+
+          <!-- Club Association -->
+          <div class="mb-3">
+            <label for="eventClub" class="form-label">Select Club</label>
+            <select
+              id="eventClub"
+              class="form-select"
+              [(ngModel)]="newEvent.clubId"
+              name="clubId"
+              required
+            >
+              <option *ngFor="let club of clubs" [value]="club.clubId">
+                {{ club.name }} (ID: {{ club.clubId }})
+              </option>
+            </select>
+          </div>
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button type="submit" class="btn btn-success btn-lg" [disabled]="createEventForm.invalid">Create Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>

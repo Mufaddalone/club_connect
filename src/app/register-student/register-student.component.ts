@@ -44,6 +44,7 @@ export class StudentRegisterComponent {
       password: this.registerData.password,
       role: this.role,
     };
+    
 
     // Call appropriate API based on selected role
     if (this.role === 'ROLE_USER') {

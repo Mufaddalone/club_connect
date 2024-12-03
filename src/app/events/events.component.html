@@ -1,24 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Events Page</title>
-  <style>
-    .card-cover {
-      background-size: cover;
-      background-position: center;
-      min-height: 300px;
-    }
-    .text-shadow-1 {
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-  </style>
-</head>
-<body> -->
-  <!-- <div class="container-fluid py-5">
-    <div class="row"> -->
-      <!-- Removed <!DOCTYPE html>, <html>, <head>, and <body> tags for Angular component -->
 <div class="container-fluid py-5">
   <div class="row">
     <!-- Sidebar Filters -->
@@ -38,53 +17,69 @@
             (ngModelChange)="onSearchChange()">
         </div>
 
-        <!-- Date filter -->
-        <div class="mb-3">
-          <label for="date" class="form-label">Date</label>
-          <input 
-            type="date" 
-            id="date" 
-            class="form-control"
-            [(ngModel)]="filters.date"
-            (ngModelChange)="onDateChange()">
-        </div>
-
-        <!-- Category filter -->
-        <div class="mb-3">
-          <label class="form-label">Category</label>
-          <select 
-            class="form-select"
-            [(ngModel)]="filters.category"
-            (ngModelChange)="onCategoryChange()">
-            <option value="">All Categories</option>
-            <option *ngFor="let category of availableCategories" [value]="category">
-              {{category}}
-            </option>
-          </select>
-        </div>
-
-        <!-- Tags filter -->
-        <div class="mb-3">
-          <label class="form-label">Tags</label>
-          <div class="d-flex flex-wrap gap-2">
-            <button 
-              *ngFor="let tag of availableTags"
-              class="btn btn-sm"
-              [ngClass]="{
-                'btn-primary': isTagSelected(tag),
-                'btn-outline-primary': !isTagSelected(tag)
-              }"
-              (click)="toggleTag(tag)">
-              {{tag}}
-            </button>
-          </div>
-        </div>
 
         <!-- Reset Filters button -->
         <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">
           Reset Filters
         </button>
       </div>
+
+      <div class="subscribe-clubs-card" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+        <h4 style="margin-bottom: 10px;">Clubs Subscription</h4>
+        <p style="margin-bottom: 15px;">
+          Stay updated by subscribing to clubs! Get notified about their latest events and announcements.
+        </p>
+        <button class="btn btn-primary" (click)="openModal()">Subscribe to Clubs</button>
+      </div> 
+      <div 
+        *ngIf="isModalOpen" 
+        class="modal-overlay" 
+        (click)="closeModal()"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center;">
+  <div 
+    class="modal-content" 
+    (click)="$event.stopPropagation()"
+    style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%;" >
+    <h4 style="margin-top: 0;">Subscribe to Clubs</h4>
+    <p>Select clubs you want to subscribe to:</p>
+
+    <!-- Club Selection -->
+    <ul style="list-style: none; padding: 0;">
+      <li *ngFor="let club of availableClubs" style="margin-bottom: 10px;">
+        <label>
+          <input 
+            type="checkbox" 
+            [value]="club.id" 
+            [(ngModel)]="club.selected"
+          />
+          {{ club.name }}
+        </label>
+      </li>
+    </ul>
+
+    <p>Select Tags you want to subscribe to:</p>
+<ul style="list-style: none; padding: 0;">
+  <li *ngFor="let tag of availableTags" style="margin-bottom: 10px;">
+    <label>
+      <input 
+        type="checkbox" 
+        [value]="tag.name"
+        [(ngModel)]="tag.selected" 
+      />
+      {{ tag.name }}
+    </label>
+  </li>
+</ul>
+
+    
+
+    <!-- Modal Actions -->
+    <div style="text-align: right; margin-top: 15px;">
+      <button class="btn btn-secondary me-3" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="subscribeToSelectedClubs()">Subscribe</button>
+    </div>
+  </div>
+</div>
     </aside>
 
     <!-- Main Content Area -->
@@ -93,14 +88,8 @@
       <div class="mb-4" *ngIf="hasActiveFilters()">
         <div class="d-flex flex-wrap gap-2 align-items-center">
           <span class="text-muted">Active filters:</span>
-          <ng-container *ngIf="filters.category">
-            <span class="badge bg-primary">{{filters.category}}</span>
-          </ng-container>
           <ng-container *ngFor="let tag of getSelectedTagsArray()">
             <span class="badge bg-info">{{tag}}</span>
-          </ng-container>
-          <ng-container *ngIf="filters.date">
-            <span class="badge bg-secondary">{{filters.date | date}}</span>
           </ng-container>
           <ng-container *ngIf="filters.searchText">
             <span class="badge bg-secondary">"{{filters.searchText}}"</span>
@@ -117,49 +106,27 @@
       <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredEvents.length > 0">
         <div class="col" *ngFor="let event of filteredEvents">
           <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" 
-     style="background-color: #343a40"> <!-- Replace dynamic background-image -->
-  <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-    <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{event.title}}</h3>
-          <!-- <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" 
-               [style.background-image]="'url(' + event.imageUrl + ')'">
+               style="background-color: #343a40">
             <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{event.title}}</h3> -->
-              <p class="mb-2">{{event.description}}</p>
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{ event.title }}</h3>
+              <p class="mb-2">{{ event.description }}</p>
               <div class="d-flex flex-wrap gap-1 mb-4">
-                <span class="badge bg-primary">{{event.category}}</span>
                 <span class="badge" 
                       *ngFor="let tag of event.tags"
                       [ngClass]="{
                         'bg-info': isTagSelected(tag),
                         'bg-secondary': !isTagSelected(tag)
                       }">
-                  {{tag}}
+                  {{ tag }}
                 </span>
               </div>
               <ul class="d-flex list-unstyled mt-auto">
-                <!-- Organizer section is commented out as it's not available in the API -->
-                <!--
                 <li class="me-auto">
-                  <img [src]="event.organizer.avatar" [alt]="event.organizer.name" 
-                       width="32" height="32" class="rounded-circle border border-white">
-                </li>
-                -->
-                <li class="d-flex align-items-center me-3">
-                  <i class="fas fa-map-marker-alt me-1"></i>
-                  <small>{{event.location}}</small>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="fas fa-calendar-alt me-1"></i>
-                  <small>{{event.date | date:'mediumDate'}}</small>
+                  <small>
+                    <strong>Club:</strong> {{ event.club?.name || 'N/A' }}
+                  </small>
                 </li>
               </ul>
-              <div class="mt-auto pt-3 border-top">
-                <button 
-                  class="btn btn-outline-light w-100" 
-                  (click)="openEventModal(event)">
-                  <span>Learn More</span>
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -167,201 +134,3 @@
     </main>
   </div>
 </div>
-
-<div class="modal fade" 
-     [class.show]="selectedEvent" 
-     [style.display]="selectedEvent ? 'block' : 'none'"
-     tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content" *ngIf="selectedEvent">
-      <div class="modal-header">
-        <h5 class="modal-title">{{selectedEvent.title}}</h5>
-        <button type="button" 
-                class="btn-close" 
-                (click)="selectedEvent = null">
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="lead">{{selectedEvent.description}}</p>
-        
-        <div class="d-flex gap-3 mb-3">
-          <div>
-            <i class="fas fa-calendar me-2"></i>
-            {{selectedEvent.date | date:'fullDate'}}
-          </div>
-          <div>
-            <i class="fas fa-map-marker-alt me-2"></i>
-            {{selectedEvent.location}}
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <h6>Category</h6>
-          <span class="badge bg-primary">{{selectedEvent.category}}</span>
-        </div>
-
-        <div class="mb-3">
-          <h6>Tags</h6>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="badge bg-secondary" 
-                  *ngFor="let tag of selectedEvent.tags">
-              {{tag}}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" 
-                class="btn btn-secondary" 
-                (click)="selectedEvent = null">
-          Close
-        </button>
-        <button class="btn btn-primary"
-                [disabled]="isSubscribed(selectedEvent.id)"
-                (click)="onSubscribe(selectedEvent.id)">
-          {{isSubscribed(selectedEvent.id) ? 'Subscribed' : 'Subscribe'}}
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Backdrop -->
-<div class="modal-backdrop fade show" 
-     *ngIf="selectedEvent"
-     (click)="selectedEvent = null">
-</div>
-      <!-- Sidebar Filters -->
-      <!-- <aside class="col-md-3 mb-4">
-        <div class="card shadow-sm p-3">
-          <h5 class="card-title mb-4">Filters</h5> -->
-          
-          <!-- Search bar -->
-          <!-- <div class="mb-3">
-            <label for="search" class="form-label">Search Events</label>
-            <input 
-              type="text" 
-              id="search" 
-              class="form-control" 
-              placeholder="Search by name or description" 
-              [(ngModel)]="filters.searchText"
-              (ngModelChange)="onSearchChange()">
-          </div> -->
-
-          <!-- Date filter -->
-          <!-- <div class="mb-3">
-            <label for="date" class="form-label">Date</label>
-            <input 
-              type="date" 
-              id="date" 
-              class="form-control"
-              [(ngModel)]="filters.date"
-              (ngModelChange)="onDateChange()">
-          </div> -->
-
-          <!-- Category filter -->
-          <!-- <div class="mb-3">
-            <label class="form-label">Category</label>
-            <select 
-              class="form-select"
-              [(ngModel)]="filters.category"
-              (ngModelChange)="onCategoryChange()">
-              <option value="">All Categories</option>
-              <option *ngFor="let category of availableCategories" [value]="category">
-                {{category}}
-              </option>
-            </select>
-          </div> -->
-
-          <!-- Tags filter -->
-          <!-- <div class="mb-3">
-            <label class="form-label">Tags</label>
-            <div class="d-flex flex-wrap gap-2">
-              <button 
-                *ngFor="let tag of availableTags"
-                class="btn btn-sm"
-                [ngClass]="{
-                  'btn-primary': isTagSelected(tag),
-                  'btn-outline-primary': !isTagSelected(tag)
-                }"
-                (click)="toggleTag(tag)">
-                {{tag}}
-              </button>
-            </div>
-          </div> -->
-
-          <!-- Reset Filters button -->
-          <!-- <button class="btn btn-secondary w-100 mt-3" (click)="resetFilters()">
-            Reset Filters
-          </button>
-        </div>
-      </aside> -->
-
-      <!-- Main Content Area -->
-      <!-- <main class="col-md-9"> -->
-        <!-- Filter Summary -->
-        <!-- <div class="mb-4" *ngIf="hasActiveFilters()">
-          <div class="d-flex flex-wrap gap-2 align-items-center">
-            <span class="text-muted">Active filters:</span>
-            <ng-container *ngIf="filters.category">
-              <span class="badge bg-primary">{{filters.category}}</span>
-            </ng-container>
-            <ng-container *ngFor="let tag of getSelectedTagsArray()">
-              <span class="badge bg-info">{{tag}}</span>
-            </ng-container>
-            <ng-container *ngIf="filters.date">
-              <span class="badge bg-secondary">{{filters.date | date}}</span>
-            </ng-container>
-            <ng-container *ngIf="filters.searchText">
-              <span class="badge bg-secondary">"{{filters.searchText}}"</span>
-            </ng-container>
-          </div>
-        </div> -->
-
-        <!-- No Results Message -->
-        <!-- <div *ngIf="filteredEvents.length === 0" class="text-center py-5">
-          <p class="h5 text-muted">No events available for the selected filters.</p>
-        </div> -->
-
-        <!-- Event Cards -->
-        <!-- <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4" *ngIf="filteredEvents.length > 0">
-          <div class="col" *ngFor="let event of filteredEvents">
-            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" 
-                 [style.background-image]="'url(' + event.imageUrl + ')'">
-              <div class="d-flex flex-column h-100 p-4 text-white text-shadow-1">
-                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{event.name}}</h3>
-                <p class="mb-2">{{event.description}}</p>
-                <div class="d-flex flex-wrap gap-1 mb-4">
-                  <span class="badge bg-primary">{{event.category}}</span>
-                  <span class="badge" 
-                        *ngFor="let tag of event.tags"
-                        [ngClass]="{
-                          'bg-info': isTagSelected(tag),
-                          'bg-secondary': !isTagSelected(tag)
-                        }">
-                    {{tag}}
-                  </span>
-                </div>
-                <ul class="d-flex list-unstyled mt-auto">
-                  <li class="me-auto">
-                    <img [src]="event.organizer.avatar" [alt]="event.organizer.name" 
-                         width="32" height="32" class="rounded-circle border border-white">
-                  </li>
-                  <li class="d-flex align-items-center me-3">
-                    <i class="fas fa-map-marker-alt me-1"></i>
-                    <small>{{event.location}}</small>
-                  </li>
-                  <li class="d-flex align-items-center">
-                    <i class="fas fa-calendar-alt me-1"></i>
-                    <small>{{event.date | date}}</small>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  </div> -->
-<!-- </body> -->
-<!-- </html> -->

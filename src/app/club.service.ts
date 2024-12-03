@@ -3,12 +3,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
 export interface Club {
-  id: number;
+  clubId: number; // Ensure this matches your data
   name: string;
   description: string;
-  // category?: string; // Uncomment when backend provides this field
-  // tags?: string[];   // Uncomment when backend provides this field
-  // imageUrl?: string; // Uncomment when backend provides this field
+  imageUrl?: string;
+  eventIds?: any[];
 }
 
 @Injectable({
@@ -39,7 +38,11 @@ export class ClubService {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  createClub(club: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, club);
+  createClub(club: any): Observable<string> {
+    return this.http.post(this.apiUrl, club, { responseType: 'text' });
+  }
+
+  createEvent(event: any): Observable<string> {
+    return this.http.post('http://localhost:8080/api/events', event, { responseType: 'text' });
   }
 }

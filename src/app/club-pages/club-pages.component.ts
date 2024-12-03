@@ -3,7 +3,6 @@ import { ClubService, Club } from '../club.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-
 @Component({
   selector: 'app-club-pages',
   standalone: true,
@@ -12,93 +11,147 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./club-pages.component.css']
 })
 export class ClubPagesComponent implements OnInit {
-  // Since 'category' and 'tags' are not available, we'll comment them out
-  // availableCategories: string[] = [];
-  // availableTags: string[] = [];
-  
-
   clubs: Club[] = [];
   filteredClubs: Club[] = [];
   subscribedClubs = new Set<number>();
 
-  onSubscribe(club: Club) {
-    if (!this.subscribedClubs.has(club.id)) {
-      this.subscribedClubs.add(club.id);
-      // TODO: Add API call to subscribe
-      console.log(`Subscribed to ${club.name}`);
-    }
-  }
+  // Modal state
+  showCreateClubModal = false;
+  showEventModal = false;
 
-  isSubscribed(club: Club): boolean {
-    return this.subscribedClubs.has(club.id);
-  }
-
-  filters = {
-    searchText: '',
-    // category: '', // Uncomment when 'category' is available
-    // selectedTags: new Set<string>() // Uncomment when 'tags' are available
+  // Form model for the new club
+  newClub = {
+    clubId: 0,
+    name: '',
+    description: '',
+    imageUrl: '',
+    eventIds: []
   };
 
-  constructor(private clubService: ClubService) { }
+  newEvent = {
+    eventId: 0,
+    name: '',
+    description: '',
+    tags:'',
+    attendeesIds: [],
+    clubId: 0
+  };
+
+  availableClubs: { id: number; name: string; }[] = [];
+
+  constructor(private clubService: ClubService) {}
 
   ngOnInit() {
     this.clubService.getClubs().subscribe(clubs => {
       this.clubs = clubs;
       this.filteredClubs = [...this.clubs];
-      // this.extractAvailableCategories(); // Uncomment when 'category' is available
-      // this.extractAvailableTags();      // Uncomment when 'tags' are available
+      console.log("HAHAHAHAHAH",this.clubs);
     });
   }
 
-
-  // Commenting out methods related to 'category' and 'tags'
-
-  /*
-  private extractAvailableCategories() {
-    const categoriesSet = new Set(this.clubs.map(club => club.category));
-    this.availableCategories = Array.from(categoriesSet);
+  // Open the modal
+  openCreateClubModal() {
+    this.showCreateClubModal = true;
   }
 
-  private extractAvailableTags() {
-    const tagsSet = new Set<string>();
-    this.clubs.forEach(club => {
-      club.tags.forEach(tag => tagsSet.add(tag));
+  openCreateEventModal() {
+    this.showEventModal = true;
+  }
+
+  // Close the modal and reset form
+  closeCreateClubModal() {
+    this.showCreateClubModal = false;
+    this.resetForm();
+  }
+
+  closeCreateEventModal() {
+    this.showEventModal = false;
+  }
+
+  generateRandomEventId(): number {
+    return Math.floor(Math.random() * 1000000); // Random ID between 0 and 999999
+  }
+  // Generate a random clubId
+  generateRandomClubId(): number {
+    return Math.floor(Math.random() * 1000000); // Random ID between 0 and 999999
+  }
+
+  // Handle Create Club form submission
+  onSubmitCreateClub() {
+    this.newClub.clubId = this.generateRandomClubId(); // Assign a random clubId
+    this.clubService.createClub(this.newClub).subscribe({
+      next: () => {
+        console.log('Club created successfully');
+        this.closeCreateClubModal(); // Close modal
+      },
+      error: (error) => {
+        console.error('Failed to create club:', error);
+      }
     });
-    this.availableTags = Array.from(tagsSet);
   }
 
-  isTagSelected(tag: string): boolean {
-    return this.filters.selectedTags.has(tag);
+  onSubmitCreateEvent() {
+
+    const tagsArray = this.newEvent.tags 
+    ? this.newEvent.tags.split(',').map(tag => tag.trim()) 
+    : [];
+
+    // Construct the newEvent object with required fields
+    const formattedEvent = {
+      name: this.newEvent.name, // Use values from your form
+      description: this.newEvent.description,
+      attendeeIds: [], // Initialize with an empty array
+      clubId: +this.newEvent.clubId, // Selected club ID from the dropdown
+      tags: tagsArray, // Tags can be added if available, or default to an empty array
+      eventId: this.generateRandomEventId(), // Generate a unique event ID
+    };
+  
+    console.log('Submitting event:', formattedEvent); // Debug log
+  
+    // Send the formatted event to the service
+    this.clubService.createEvent(formattedEvent).subscribe({
+      next: () => {
+        console.log('Event created successfully');
+        this.closeCreateEventModal();
+      },
+      error: (error) => {
+        console.error('Failed to create event:', error); // Log the error
+      }
+    });
+  }
+  
+  // Reset the form
+  resetForm() {
+    this.newClub = {
+      clubId: 0,
+      name: '',
+      description: '',
+      imageUrl: '',
+      eventIds: []
+    };
   }
 
-  toggleTag(tag: string) {
-    if (this.filters.selectedTags.has(tag)) {
-      this.filters.selectedTags.delete(tag);
-    } else {
-      this.filters.selectedTags.add(tag);
-    }
-    this.applyFilters();
+  fetchAvailableClubs() {
+    this.clubService.getClubs().subscribe({
+      next: (clubResponse) => {
+        // Map clubs into availableClubs array
+        this.availableClubs = (clubResponse || []).map((club: any) => ({
+          id: club.id,
+          name: club.name,
+        }));
+  
+        console.log('Available Clubs:', this.availableClubs);
+      },
+      error: (err) => console.error('Failed to fetch clubs:', err),
+    });
   }
-
-  onCategoryChange() {
-    this.applyFilters();
-  }
-
-  getSelectedTagsArray(): string[] {
-    return Array.from(this.filters.selectedTags);
-  }
-  */
 
   onSearchChange() {
     this.applyFilters();
   }
 
   hasActiveFilters(): boolean {
-    return (
-      // this.filters.selectedTags.size > 0 ||
-      // !!this.filters.category ||
-      !!this.filters.searchText
-    );
+    return !!this.filters.searchText;
   }
 
   private applyFilters() {
@@ -106,24 +159,16 @@ export class ClubPagesComponent implements OnInit {
       const matchesSearch = !this.filters.searchText ||
         club.name.toLowerCase().includes(this.filters.searchText.toLowerCase()) ||
         club.description.toLowerCase().includes(this.filters.searchText.toLowerCase());
-        // club.tags?.some(tag => tag.toLowerCase().includes(this.filters.searchText.toLowerCase()));
-
-      // const matchesCategory = !this.filters.category || club.category === this.filters.category;
-
-      // const matchesTags = this.filters.selectedTags.size === 0 ||
-      //   club.tags?.some(tag => this.filters.selectedTags.has(tag));
-
-      // return matchesSearch && matchesCategory && matchesTags;
       return matchesSearch;
     });
   }
 
   resetFilters() {
-    this.filters = {
-      searchText: '',
-      // category: '',
-      // selectedTags: new Set<string>()
-    };
+    this.filters = { searchText: '' };
     this.filteredClubs = [...this.clubs];
   }
+
+  filters = {
+    searchText: ''
+  };
 }
